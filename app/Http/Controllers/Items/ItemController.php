@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Item\ItemRequest;
 use App\Helpers\ItemFilter;
+use App\Models\Item;
 
 class ItemController extends Controller
 {
@@ -15,8 +16,14 @@ class ItemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(ItemFilter $filters) {
-
-        return resolveResponse(__('items.fetch_success'), $filters->request->all());
+        if($filters->request->query('status') === "ALL"){
+            $items = Item::all();
+            return resolveResponse(__('items.fetch_success'), $items);
+        }else{
+            $items = Item::with([])->filter($filters)->paginate($filters->limit);
+            return resolveResponse(__('items.fetch_success'), $items);
+        }
+        
     }
 
 
