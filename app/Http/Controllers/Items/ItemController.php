@@ -36,7 +36,9 @@ class ItemController extends Controller
     public function store(ProductCategoryRequest $request) {
         \DB::beginTransaction();
         try {
-           
+            $item = Item::create([
+                'name' => $request->name
+            ]);
             \DB::commit();
             return resolveResponse(__('items.create_success'), $item);
         }catch(\Exception $e) {
