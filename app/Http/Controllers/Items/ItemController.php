@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Item\ItemRequest;
 use App\Helpers\ItemFilter;
 use App\Models\Item;
-
+use Illuminate\Support\Carbon;
 class ItemController extends Controller
 {
     /**
@@ -75,6 +75,11 @@ class ItemController extends Controller
         \DB::beginTransaction();
         try {
            $item = Item::findOrFail($id);
+
+           if($item){
+               $item->is_completed = $request->is_completed ? $request->is_completed : false;
+               $item->completed_at = $request->is_completed ? Carbon::now() : null;
+           }
            $item->update([
                'name' => $request->name
            ]);
