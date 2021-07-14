@@ -16,6 +16,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected $namespace = 'App\Http\Controllers';
 
+
+    //API
+    protected $item_api_namespace = 'App\Http\Controllers\Items';
+
     /**
      * The path to the "home" route for your application.
      *
@@ -46,8 +50,18 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        $this->mapApiItemRoutes();
+
         //
     }
+
+     // ITEM ROUTES
+     protected function mapApiItemRoutes()
+     {
+         Route::prefix('api/v1')
+             ->namespace($this->item_api_namespace)
+             ->group(base_path('routes/api/v1/items/items.php'));
+     }
 
     /**
      * Define the "web" routes for the application.
