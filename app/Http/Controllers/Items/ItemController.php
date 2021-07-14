@@ -17,10 +17,10 @@ class ItemController extends Controller
      */
     public function index(ItemFilter $filters) {
         if($filters->request->query('status') === "ALL"){
-            $items = Item::all();
+            $items = Item::withTrashed()->get();
             return resolveResponse(__('items.fetch_success'), $items);
         }else{
-            $items = Item::with([])->filter($filters)->paginate($filters->limit);
+            $items = Item::withTrashed()->filter($filters)->paginate($filters->limit);
             return resolveResponse(__('items.fetch_success'), $items);
         }
         

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/item";
+const baseURL = "/api/v1/item";
 
 const apiResource = {
     index: "getItems"
@@ -27,7 +27,7 @@ const actions = {
         let search = payload && payload.search != null ? payload.search : "";
         commit("SET_ITEM_LOADING", true);
         const { data } = await axios
-            .get(`/item?page=${page}&limit=${limit}&search=${search}`)
+            .get(`${baseURL}?page=${page}&limit=${limit}&search=${search}`)
             .then(data => {
                 commit("SET_ITEM_LOADING", false);
                 return data;
@@ -47,6 +47,7 @@ const actions = {
         return data.message;
     },
     async updateItem({ commit, dispatch }, payload) {
+        console.log(payload)
         const { data } = await axios.put(`${baseURL}/${payload.id}`, payload);
         commit("SET_UPDATE_ITEM", data);
         dispatch(apiResource.index);
@@ -101,7 +102,7 @@ const getters = {
         return state.all_items;
     },
     items(state) {
-        return state.items;
+        return state.items.data;
     },
     item(state) {
         return state.item;
