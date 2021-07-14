@@ -26,6 +26,21 @@ class ItemController extends Controller
         
     }
 
+     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id) {
+        try {
+            $item = Item::findOrFail($id);
+            return resolveResponse(__('items.fetch_success'), $item);
+        }catch(\Exception $e) {
+            return rejectResponse(__('items.fetch_failed'), null);
+        }
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -33,7 +48,7 @@ class ItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductCategoryRequest $request) {
+    public function store(ItemRequest $request) {
         \DB::beginTransaction();
         try {
             $item = Item::create([
@@ -48,22 +63,6 @@ class ItemController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id) {
-        try {
-          
-            return resolveResponse(__('items.fetch_success'), $item);
-        }catch(\Exception $e) {
-            return rejectResponse(__('items.fetch_failed'), null);
-        }
-    }
-
-   
 
     /**
      * Update the specified resource in storage.
@@ -72,11 +71,13 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductCategoryRequest $request, $id) {
+    public function update(ItemRequest $request, $id) {
         \DB::beginTransaction();
         try {
-           
-
+           $item = Item::findOrFail($id);
+           $item->update([
+               'name' => $request->name
+           ]);
             \DB::commit();
             return resolveResponse(__('items.update_success'), $item);
         }catch(\Exception $e) {
@@ -95,7 +96,8 @@ class ItemController extends Controller
     public function delete($id) {
         \DB::beginTransaction();
         try {
-           
+           $item = Item::findOrFail($id);
+           $item->delete();
             \DB::commit();
             return resolveResponse(__('items.delete_success'), $item);
         }catch(\Exception $e) {
@@ -113,12 +115,13 @@ class ItemController extends Controller
     public function restore($id) {
         \DB::beginTransaction();
         try {
-           
+            $item = Item::onlyTrashed()->findOrFail($id);
+            $item->restore();
             \DB::commit();
-            return resolveResponse(__('products.restore_success'), $item);
+            return resolveResponse(__('items.restore_success'), $item);
         }catch(\Exception $e) {
             \DB::rollback();
-            return rejectResponse(__('products.restore_failed'), null);
+            return rejectResponse(__('items.restore_failed'), $e->getMessage());
         }
     }
 }

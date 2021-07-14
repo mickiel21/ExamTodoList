@@ -8,6 +8,6 @@ use App\Helpers\QueryFilter;
 use App\Traits\HasFilter;
 class Item extends Model
 {
-    use HasFilter;
+    use HasFilter , SoftDeletes;
     protected $fillable = ['name'];
 }
