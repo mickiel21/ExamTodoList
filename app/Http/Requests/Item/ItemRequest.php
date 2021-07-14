@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests\Item;
-
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ItemRequest extends FormRequest
@@ -13,7 +13,7 @@ class ItemRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,10 +21,16 @@ class ItemRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
-        return [
-            //
-        ];
+        if(\Request::getMethod() == "POST"){
+            return [
+                'name' => 'required'
+            ];
+        }else {
+            return [
+                'name' => 'required'
+            ];
+        }
     }
 }
